@@ -66,7 +66,7 @@ The zip file contains one or more .tf files with Terraform instructions.  These 
 
 To enable SSH to the Instance, follow the Oracle guide on [Managing Key Pair on Linux Instances](https://docs.cloud.oracle.com/iaas/Content/Compute/Tasks/managingkeypairs.htm?Highlight=ssh)
 
-Paste the public key into the "ssh_public_key" variable when Applying the stack or modify and existing Instance under Resources>Console Connections
+Paste the public key into the "ssh_public_key" variable when Applying the stack.  If the Instance already exists, Edit the Stack configuration to modify the Variables, then run a Destroy followed by Apply, which will remove your current instance and create a new one with the SSH key included.  If the backup process has run on Sunday morning, the latest data will be restored.
 
 Additional information can be found on the Oracle Support Page under [Instance Console Connections](https://docs.cloud.oracle.com/iaas/Content/Compute/References/serialconsole.htm)
 
