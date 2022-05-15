@@ -1,0 +1,14 @@
+terraform.tfstate
+terraform.tfstate.backup
+oci_api_key_public.pem
+oci_api_key.pem
+private-key.ppk
+public-key
+public-key.pub
+.terraform.lock.hcl
+connect.tf
+
+.terraform/
+terraform.exe
+.terraform.tfstate.lock.info
+zip-files.ps1
