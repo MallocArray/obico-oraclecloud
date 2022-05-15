@@ -4,10 +4,13 @@ Obico (formerly The Spaghetti Detective) is an amazing project using AI and Deep
 <https://www.obico.io/>
 
 Obico is a paid service, but is also open source and able to be installed as a self-hosted docker container with instructions found here:
+
 <https://www.obico.io/docs/server-guides/>
+
 This does require more powerful hardware than a Raspberry Pi, so you need either a PC to leave powered on any time you are printing, or purchase separate hardware such as nVidia Jetson Nano.
 
-Oracle Cloud Infrastructure (OCI) offers "Oracle Cloud Free Tier" which includes Always Free cloud services, including ARM-based Ampere VMs equivalent to 4 CPU cores and 24 GB RAM, which is more than sufficient to run an Obico instance with no charge and no expiration date.
+Oracle Cloud Infrastructure (OCI) offers "Oracle Cloud Free Tier" which includes Always Free cloud services, including ARM-based Ampere VMs equivalent to 4 CPU cores and 24 GB RAM, which is more than sufficient to run an Obico instance with no charge and no expiration date. (Credit card required for registration)
+
 <https://www.oracle.com/cloud/free/>
 
 OCI uses "stacks" that automates the provisioning of an environment using Terraform.  Using only a single zip file, Obico can be provisioned quickly with very little interaction.
@@ -18,10 +21,8 @@ This project contains a zip file that can be used with Oracle Cloud to create a 
 
 1) Download the .zip file.
 2) Register an account on Oracle Cloud or login to your existing account
-    - Register: <https://myservices.us.oraclecloud.com/mycloud/signup>
+    - Register: <https://www.oracle.com/cloud/free/> (Credit card required for registration)
     - Login: <https://cloud.oracle.com/>
-    - Recommended: Go to Menu>Compute>Instances>Create Instance. Click on "Edit" on the Placement panel and take note of the Availability domain number that is tagged with "Always Free Eligible". The process can then be cancelled. This number will be used later. (At this time, Ampere A1 can be created in any AD)
-    ![Availability Domains](./images/availability-domain.jpg)
 3) Navigate to Menu>Storage>Object Storage & Archive>Buckets>Create Bucket. Give the bucket a name, such as "obico-backup". This will be used to store a backup of the configuration database outside of the VM Instance. All default options are acceptable, but "Enable Object Versioning" may be desirable.
 
     ![Bucket](./images/bucket.jpg)
@@ -47,6 +48,8 @@ This project contains a zip file that can be used with Oracle Cloud to create a 
 11) Follow the rest of the documentation steps from the official project to complete the server, Octoprint, and mobile app
 
     <https://github.com/TheSpaghettiDetective/obico-server#server-configuration>
+
+    <https://www.obico.io/docs/server-guides/configure/>
 
 **Note**: When navigating around the Oracle interface, make sure to change the Compartment option on the left side to "obico" by default to view the newly created objects. To view the Stacks, change the Compartment back to root
 
