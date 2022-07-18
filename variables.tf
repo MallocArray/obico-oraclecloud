@@ -63,7 +63,7 @@ variable "operating_system" {
 }
 
 variable "operating_system_version" {
-  default = "20.04"
+  default = "22.04"
   description = "Version name of the specified OS, such as '18.04'"
 }
 
