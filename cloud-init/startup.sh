@@ -47,7 +47,7 @@ cd /obico-server && sudo docker-compose up -d
 echo "Install all remaining updates and keep current iptables settings"
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
-sudo apt upgrade -y
+sudo apt-get upgrade -y
 
 
 echo "Reboot to ensure all updates are applied"
