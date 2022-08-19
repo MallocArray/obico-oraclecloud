@@ -19,3 +19,19 @@ resource "oci_core_network_security_group_security_rule" "obico_network_security
         }
     }
 }
+
+resource "oci_core_network_security_group_security_rule" "obico_network_security_group_security_rule_webrtc" {
+    # https://www.obico.io/docs/server-guides/faqs/#why-doesnt-the-premium-streaming-work
+    network_security_group_id = "${oci_core_network_security_group.obico_network_security_group.id}"
+    direction = "INGRESS"
+    protocol = "17"
+    description = "Port used for WebRTC protocol"
+    source   = "${var.source_ip}"
+    source_type = "CIDR_BLOCK"
+    udp_options {
+        destination_port_range {
+            max = "24999"
+            min = "20000"
+        }
+    }
+}

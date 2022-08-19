@@ -45,6 +45,7 @@ cd /obico-server && sudo docker-compose up -d
 
 
 echo "Install all remaining updates and keep current iptables settings"
+sudo iptables -A INPUT -p udp --destination-port 20000:24999 -j ACCEPT
 echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
 echo iptables-persistent iptables-persistent/autosave_v6 boolean true | sudo debconf-set-selections
 sudo apt-get upgrade -y
