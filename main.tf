@@ -1,11 +1,13 @@
-data "template_file" "obico-init" {
-  template = "${file("./cloud-init/startup.sh")}"
-  # These vars don't do anything, but they have to be defined to not cause errors
-  vars = {
-    bucket = "https://objectstorage.${var.region}.oraclecloud.com${oci_objectstorage_preauthrequest.obico_backup_preauthenticated_request.access_uri}"
-    ddns_url = "${var.ddns_url}"
-    tz="${var.timezone}"
+terraform {
+  required_providers {
+    oci = {
+      source = "oracle/oci"
+    }
   }
+}
+
+data "template_file" "obico-init" {
+  template = "${file("./cloud-init/startup.yaml")}"
 }
 
 resource "oci_identity_compartment" "obico_compartment" {
@@ -37,12 +39,12 @@ resource "oci_core_instance" "obico_instance" {
   metadata = {
     ssh_authorized_keys = "${var.ssh_public_key}"
     user_data           = "${base64encode(data.template_file.obico-init.rendered)}"
+    bucket_name         = "${var.bucket_name}"
+    bucket_url          = "https://objectstorage.${var.region}.oraclecloud.com${oci_objectstorage_preauthrequest.obico_backup_preauthenticated_request.access_uri}"
     ddns_url            = "${var.ddns_url}"
+    dns_name            = "${var.dns_name}"
     timezone            = "${var.timezone}"
-    # dns_name            = "${var.dns_name}"
-    bucket              = "https://objectstorage.${var.region}.oraclecloud.com${oci_objectstorage_preauthrequest.obico_backup_preauthenticated_request.access_uri}"
   }
-
 }
 
 

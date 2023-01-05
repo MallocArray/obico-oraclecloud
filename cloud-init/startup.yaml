@@ -6,12 +6,11 @@ packages:
     - jq
     - docker-compose
     - zip
-    - dbus  # Should already be installed.  Used for setting timezone
 
 runcmd:
     # Set timezone if defined
     - |
-        if [$(cloud-init query ds.metadata.timezone)]
+        if (cloud-init query ds.metadata.timezone)
         then
           timedatectl set-timezone $(cloud-init query ds.metadata.timezone)
         fi
@@ -26,13 +25,13 @@ runcmd:
 
     # Restore database and .env file from bucket if configured
     - |
-        if [ $(cloud-init query ds.metadata.bucket) ]
+        if [ $(cloud-init query ds.metadata.bucket_url) ]
         then
           echo "Downloading existing database backup"
           cd /obico-server/backend
-          wget ${bucket}db.sqlite3
+          wget $(cloud-init query ds.metadata.bucket_url)db.sqlite3
           cd /obico-server
-          wget ${bucket}.env
+          wget $(cloud-init query ds.metadata.bucket_url).env
         fi
 
     # Build and start Obico
@@ -49,15 +48,14 @@ runcmd:
 write_files:
   - content: |
       #!/bin/bash
-      bucket=$(cloud-init query ds.metadata.bucket)
-      curl -T /obico-server/backend/db.sqlite3 $bucket
-      curl -T /obico-server/.env $bucket
-    path: /obico-server/obico-backup.sh
+      curl -T /obico-server/backend/db.sqlite3 $(cloud-init query ds.metadata.bucket_url)
+      curl -T /obico-server/.env $(cloud-init query ds.metadata.bucket_url)
+    path: /usr/obico-backup.sh
     permissions: '0744'
 
     # Upload backup file at 1:00 am every Sunday
   - content: |
-      0 1 * * 0 root /obico-server/obico-backup.sh
+      0 1 * * 0 root /usr/obico-backup.sh
     path: /etc/crontab
     append: true
 
@@ -81,20 +79,18 @@ write_files:
       wait_cpu_low 15
 
       # Download latest code changes and rebuild the image to use the latest
-      cd obico-server
+      cd /obico-server
       git checkout release
       git pull
-      docker compose up --build -d
-    path: /obico-server/obico-upgrade.sh
+      docker-compose up --build -d
+    path: /usr/obico-upgrade.sh
     permissions: '0744'
 
     # Update Obico at 2:00 am every day
   - content: |
-      0 2 * * * root bash obico-update.sh
+      0 2 * * * root /usr/obico-update.sh
     path: /etc/crontab
     append: true
-
-
 
 # Perform a reboot once cloud-init has completed.
 power_state:
