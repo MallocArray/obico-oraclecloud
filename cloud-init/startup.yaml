@@ -1,0 +1,105 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+packages:
+    - jq
+    - docker-compose
+    - zip
+    - dbus  # Should already be installed.  Used for setting timezone
+
+runcmd:
+    # Set timezone if defined
+    - |
+        if [$(cloud-init query ds.metadata.timezone)]
+        then
+          timedatectl set-timezone $(cloud-init query ds.metadata.timezone)
+        fi
+
+    # Dynamic DNS Update using URL from variables stored in metadata
+    - curl $(cloud-init query ds.metadata.ddns_url)
+
+    # Clone Obico repo to root
+    - |
+        cd /
+        git clone -b release https://github.com/TheSpaghettiDetective/obico-server.git
+
+    # Restore database and .env file from bucket if configured
+    - |
+        if [ $(cloud-init query ds.metadata.bucket) ]
+        then
+          echo "Downloading existing database backup"
+          cd /obico-server/backend
+          wget ${bucket}db.sqlite3
+          cd /obico-server
+          wget ${bucket}.env
+        fi
+
+    # Build and start Obico
+    - |
+        cd /obico-server
+        docker-compose up -d
+
+    # Open firewall ports for WebRTC and save current open ports as default
+    - |
+        iptables -A INPUT -p udp --destination-port 20000:24999 -j ACCEPT
+        echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+        echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
+
+write_files:
+  - content: |
+      #!/bin/bash
+      bucket=$(cloud-init query ds.metadata.bucket)
+      curl -T /obico-server/backend/db.sqlite3 $bucket
+      curl -T /obico-server/.env $bucket
+    path: /obico-server/obico-backup.sh
+    permissions: '0744'
+
+    # Upload backup file at 1:00 am every Sunday
+  - content: |
+      0 1 * * 0 root /obico-server/obico-backup.sh
+    path: /etc/crontab
+    append: true
+
+    # Check if CPU is low (not monitoring a print) and upgrade Obico
+  - content: |
+      #!/bin/bash
+      function wait_cpu_low() {
+      # https://stackoverflow.com/questions/32311768/bash-wait-until-cpu-usage-gets-below-a-threshold#:~:text=In%20a%20bash%20script%20I%20need%20to%20wait,commands%20executed%20when%20CPU%20usage%20is%20below%2040%25
+        threshold=$1
+        while true; do
+          current=$(uptime | awk '{ gsub(/,/, ""); print $10 * 100; }')
+          if [ $current -lt $threshold ]; then
+            break;
+          else
+            echo "Sleeping as CPU is $current which is above threshold of $threshold so probably monitoring a print"
+            sleep 5
+          fi
+        done
+      }
+      # Single printer with 2 vCPU typically shows 20-25% usage
+      wait_cpu_low 15
+
+      # Download latest code changes and rebuild the image to use the latest
+      cd obico-server
+      git checkout release
+      git pull
+      docker compose up --build -d
+    path: /obico-server/obico-upgrade.sh
+    permissions: '0744'
+
+    # Update Obico at 2:00 am every day
+  - content: |
+      0 2 * * * root bash obico-update.sh
+    path: /etc/crontab
+    append: true
+
+
+
+# Perform a reboot once cloud-init has completed.
+power_state:
+  mode: reboot
+
+# Reference Links
+# https://cloudinit.readthedocs.io/en/latest/topics/modules.html
+# https://docs.microsoft.com/en-us/azure/virtual-machines/linux/using-cloud-init
