@@ -30,10 +30,10 @@ variable "bucket_name" {
   description = "Name of the Oracle Storage Bucket created previously"
 }
 
-# variable "dns_name" {
-#   default = ""
-#   description = "DNS name for the public IP assigned."
-# }
+variable "dns_name" {
+  default = ""
+  description = "DNS name for the public IP assigned."
+}
 
 variable "ddns_url" {
   default=""

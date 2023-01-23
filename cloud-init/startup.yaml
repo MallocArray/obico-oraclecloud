@@ -1,11 +1,25 @@
 #cloud-config
+
+# Add Docker repo
+# https://stackoverflow.com/questions/24418815/how-do-i-install-docker-using-cloud-init
+# https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=arm64] https://download.docker.com/linux/ubuntu $RELEASE stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+
 package_update: true
 package_upgrade: true
 package_reboot_if_required: true
 packages:
     - jq
-    - docker-compose
     - zip
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-compose-plugin
 
 runcmd:
     # Set timezone if defined
@@ -37,13 +51,8 @@ runcmd:
     # Build and start Obico
     - |
         cd /obico-server
-        docker-compose up -d
+        docker compose up -d
 
-    # Open firewall ports for WebRTC and save current open ports as default
-    - |
-        iptables -A INPUT -p udp --destination-port 20000:24999 -j ACCEPT
-        echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
-        echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
 
 write_files:
   - content: |
@@ -82,8 +91,8 @@ write_files:
       cd /obico-server
       git checkout release
       git pull
-      docker-compose up --build -d
-    path: /usr/obico-upgrade.sh
+      docker compose up --build -d
+    path: /usr/obico-update.sh
     permissions: '0744'
 
     # Update Obico at 2:00 am every day

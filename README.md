@@ -134,3 +134,11 @@ sudo docker-compose up --build -d
 <https://www.obico.io/docs/server-guides/ops/#upgrade-obico-server>
 
 If you have not setup SSH, go to the Stacks menu mentioned above, select your stack for Obico and run the `Destroy` command to remove the current instance and then `Apply` to recreate the instance with the latest version and restoring from your last backup
+
+### Unarchive a Printer
+
+Self-Hosted servers are not able to view archived printers, as that code is in a separate private repo, but printers can be un-archived by connecting to the db container and issuing the command
+
+```bash
+app_printer set archived_at = null
+```
