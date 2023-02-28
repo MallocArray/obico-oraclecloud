@@ -35,3 +35,37 @@ resource "oci_core_network_security_group_security_rule" "obico_network_security
         }
     }
 }
+
+resource "oci_core_network_security_group_security_rule" "obico_network_security_group_security_rule_stun" {
+    # https://www.obico.io/docs/server-guides/faqs/#why-doesnt-the-premium-streaming-work
+    # https://blog.addpipe.com/troubleshooting-webrtc-connection-issues/
+    network_security_group_id = "${oci_core_network_security_group.obico_network_security_group.id}"
+    direction = "INGRESS"
+    protocol = "17"
+    description = "Port used for STUN protocol"
+    source   = "${var.source_ip}"
+    source_type = "CIDR_BLOCK"
+    udp_options {
+        destination_port_range {
+            max = "3478"
+            min = "3478"
+        }
+    }
+}
+
+resource "oci_core_network_security_group_security_rule" "obico_network_security_group_security_rule_stun_tls" {
+    # https://www.obico.io/docs/server-guides/faqs/#why-doesnt-the-premium-streaming-work
+    # https://blog.addpipe.com/troubleshooting-webrtc-connection-issues/
+    network_security_group_id = "${oci_core_network_security_group.obico_network_security_group.id}"
+    direction = "INGRESS"
+    protocol = "17"
+    description = "Port used for STUN TLS protocol"
+    source   = "${var.source_ip}"
+    source_type = "CIDR_BLOCK"
+    udp_options {
+        destination_port_range {
+            max = "5349"
+            min = "5349"
+        }
+    }
+}
