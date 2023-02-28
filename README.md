@@ -140,5 +140,23 @@ If you have not setup SSH, go to the Stacks menu mentioned above, select your st
 Self-Hosted servers are not able to view archived printers, as that code is in a separate private repo, but printers can be un-archived by connecting to the db container and issuing the command
 
 ```bash
-app_printer set archived_at = null
+sudo apt install sqlite3
+cd /obico-server
+sqlite3 backend/db.sqlite3
+UPDATE app_printer SET archived_at = NULL;
+.exit
+```
+
+## Removing timelapse list
+
+After a rebuild and restore of the database file, the old timelapse videos will no longer be present on the server, but references in the database will still be present.
+
+Connecting to the db file with `sqlite3` and running the following command will remove all existing timelapse entries
+
+```bash
+sudo apt install sqlite3
+cd /obico-server
+sqlite3 backend/db.sqlite3
+UPDATE app_print SET video_url = NULL, tagged_video_url = NULL, poster_url = NULL;
+.exit
 ```
