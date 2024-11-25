@@ -82,7 +82,7 @@ Additional information can be found on the Oracle Support Page under [Instance C
 
 A static IP address can be reserved to keep the same address even if the original instance is deleted or recreated.  This is not done automatically by the Terraform file, but can configured after creation
 
-1) Navigate to Menu>Compute>Instances and select the Obico instance name. (Ensure Compartment on the left side is changed to "obico")
+1) Navigate to Menu>Compute>Instances and select the Obico instance name. (Ensure Compartment on the left side is changed to "obico" or your project name)
 2) Scroll down to "Attached VNICs" under Resources on the left side and click on the Primary VNIC name
 
    ![alt text](./images/attached-vnics.jpg)
