@@ -19,6 +19,7 @@ variable "timezone" {
 
 variable "project_name" {
   default = "obico"
+  description = "Alphanumeric only (No special characters like - or _). Used for the Compartment and DNS name for the VCN"
 }
 
 variable "region" {}
