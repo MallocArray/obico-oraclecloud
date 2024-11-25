@@ -2,6 +2,8 @@ resource "oci_core_vcn" "obicoVCN" {
   cidr_block     = "10.0.0.0/16"
   compartment_id = "${oci_identity_compartment.obico_compartment.id}"
   display_name   = "${var.project_name}-${random_id.obico_id.dec}"
+  dns_label      = "${var.project_name}"
+  is_ipv6enabled = "false"
 }
 
 resource "oci_core_internet_gateway" "obicoIG" {
