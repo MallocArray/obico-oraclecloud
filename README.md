@@ -1,17 +1,17 @@
 # Obico on Oracle Cloud Infrastructure with Free Tier
 
-Obico (formerly The Spaghetti Detective) is an amazing project using AI and Deep Learning to monitor a webcam observing your 3d printer and can pause prints if things look to be failing.
-<https://www.obico.io/>
+Obico (formerly The Spaghetti Detective) is an amazing project using AI and Deep Learning to monitor a webcam observing your 3D printer and can pause prints if things look to be failing.
+[https://www.obico.io/](https://www.obico.io/)
 
 Obico is a paid service, but is also open source and able to be installed as a self-hosted docker container with instructions found here:
 
-<https://www.obico.io/docs/server-guides/>
+[https://www.obico.io/docs/server-guides/](https://www.obico.io/docs/server-guides/)
 
 This does require more powerful hardware than a Raspberry Pi, so you need either a PC to leave powered on any time you are printing, or purchase separate hardware such as nVidia Jetson Nano.
 
 Oracle Cloud Infrastructure (OCI) offers "Oracle Cloud Free Tier" which includes Always Free cloud services, including ARM-based Ampere VMs equivalent to 4 CPU cores and 24 GB RAM, which is more than sufficient to run an Obico instance with no charge and no expiration date. (Credit card required for registration)
 
-<https://www.oracle.com/cloud/free/>
+[https://www.oracle.com/cloud/free/](https://www.oracle.com/cloud/free/)
 
 OCI uses "stacks" that automates the provisioning of an environment using Terraform.  Using only a single zip file, Obico can be provisioned quickly with very little interaction.
 
@@ -21,35 +21,40 @@ This project contains a zip file that can be used with Oracle Cloud to create a 
 
 1) Download the .zip file.
 2) Register an account on Oracle Cloud or login to your existing account
-    - Register: <https://www.oracle.com/cloud/free/> (Credit card required for registration)
-    - Login: <https://cloud.oracle.com/>
+
+   - Register: [https://www.oracle.com/cloud/free/](https://www.oracle.com/cloud/free/) (Credit card required for registration)
+   - Login: [https://cloud.oracle.com/](https://cloud.oracle.com/)
 3) Navigate to Menu>Storage>Object Storage & Archive>Buckets>Create Bucket. Give the bucket a name, such as "obico-backup". This will be used to store a backup of the configuration database outside of the VM Instance. All default options are acceptable, but "Enable Object Versioning" may be desirable.
 
-    ![Bucket](./images/bucket.jpg)
+   ![Bucket](./images/bucket.jpg)
 4) Navigate to the Menu>Developer Services>Resource Manager>Stacks
 5) Click "Create Stack"
 
-    ![alt text](./images/stacks.jpg)
-6) Leave the default option of "My Configuration". Change the "Terraform configuration source" to ".Zip file", then drag or Browse the zip file to the Stack Configuration section. Provide a name for the stack if desired or keep the auto-generated name.  Leave the default Terraform version as 1.0.x then click Next
+   ![alt text](./images/stacks.jpg)
+6) Leave the default option of "My Configuration". Change the "Terraform configuration source" to ".Zip file", then drag or Browse the zip file to the Stack Configuration section. Provide a name for the stack if desired or keep the auto-generated name.  Leave the default Terraform version as 1.2.x then click Next
 
-    ![alt text](./images/create-stack.jpg)
+   ![alt text](./images/create-stack.jpg)
 7) Review the variables and modify if needed. Click 'Next', then 'Create'
-    - Enter/verify the Availability Domain number in the list of variables.
-    - Enter the name of the storage bucket created earlier
-    - Defaults to an Ampere ARM based instance (VM.Standard.A1.Flex)
-    - It is highly recommended to enter your public IP address in the source_ip field, so only your home IP can access the instance.  You can find the IP by going to <https://www.whatismyip.com/> and copying the Public IPv4 address.  Enter it followed by /32 such as 100.110.120.123/32
+
+   - Enter/verify the Availability Domain number in the list of variables.
+   - Enter the name of the storage bucket created earlier
+   - Defaults to an Ampere ARM based instance (VM.Standard.A1.Flex)
+   - It is highly recommended to enter your public IP address in the source_ip field, so only your home IP can access the instance.  You can find the IP by going to [https://www.whatismyip.com/](https://www.whatismyip.com/) and copying the Public IPv4 address.  Enter it followed by /32 such as 100.110.120.123/32
 8) On the final Create page, check the box to "Run Apply"
-    - Alternatively, in the list of Stacks, click on the name of the newly created Stack.  Click on **Apply** followed by Apply.
+
+   - Alternatively, in the list of Stacks, click on the name of the newly created Stack.  Click on **Apply** followed by Apply.
 9) In a few minutes, the Stacks job will complete and show the public IP address and URL to access the controller. It may take 15 minutes or more to complete the installation of the software.
-    - If the process encounters an error stating "shape VM.Standard.A1.Flex not found", verify the Availability Domain that is Always Free Eligible for your region, or try a different number 1-3.
-    - If the process encounters an error stating "Out of host capacity", your Region does not currently have available resources for Always Free instances. In the Oracle Forums regarding this error, they recommend trying again later as capacity is always being added.
+
+   - If the process encounters an error stating "shape VM.Standard.A1.Flex not found", verify the Availability Domain that is Always Free Eligible for your region, or try a different number 1-3.
+   - If the process encounters an error stating "Out of host capacity", your Region does not currently have available resources for Always Free instances. In the Oracle Forums regarding this error, they recommend trying again later as capacity is always being added. You can also upgrade to "Pay As You Go" (PAYG) which makes the Ampere instances much more available, and as long as you stay under the Free Tier limits, continues to be free.
+     [Managing Account Upgrades and Payment Method](https://docs.oracle.com/en-us/iaas/Content/Billing/Tasks/changingpaymentmethod.htm)
 10) Open the URL to the web interface and login.
-    If using a DNS name, update the entry to reflect the new IP address, or consider a Dynamic DNS service such as <http://www.duckdns.org> to automatically update when provisioned
+    If using a DNS name, update the entry to reflect the new IP address, or consider a Dynamic DNS service such as [http://www.duckdns.org](http://www.duckdns.org) to automatically update when provisioned
 11) Follow the rest of the documentation steps from the official project to complete the server, Octoprint, and mobile app
 
-    <https://github.com/TheSpaghettiDetective/obico-server#server-configuration>
+    [https://github.com/TheSpaghettiDetective/obico-server#server-configuration](https://github.com/TheSpaghettiDetective/obico-server#server-configuration)
 
-    <https://www.obico.io/docs/server-guides/configure/>
+    [https://www.obico.io/docs/server-guides/configure/](https://www.obico.io/docs/server-guides/configure/)
 
 **Note**: When navigating around the Oracle interface, make sure to change the Compartment option on the left side to "obico" by default to view the newly created objects. To view the Stacks, change the Compartment back to root
 
@@ -80,10 +85,10 @@ A static IP address can be reserved to keep the same address even if the origina
 1) Navigate to Menu>Compute>Instances and select the Obico instance name. (Ensure Compartment on the left side is changed to "obico")
 2) Scroll down to "Attached VNICs" under Resources on the left side and click on the Primary VNIC name
 
-    ![alt text](./images/attached-vnics.jpg)
+   ![alt text](./images/attached-vnics.jpg)
 3) Scroll down to "IPv4 Addresses" under Resources on the left side and click the "..." icon to the far right and select Edit
 
-    ![alt text](./images/edit-ip.jpg)
+   ![alt text](./images/edit-ip.jpg)
 4) Change **Public IP Type** to "No Public IP" and click Update. Then click Edit again and select **Reserved Public IP** and "Create a New Reserved Public IP" or select a previously created entry. Click Update.
 
 ## Deleting or re-creating an instance
@@ -91,9 +96,9 @@ A static IP address can be reserved to keep the same address even if the origina
 Instances created using Stacks can easily be destroyed to remove all associated items and optionally recreate them
 
 1) Navigate to Menu>Resource Manager>Stacks and select the previously used Stack name
-1) Select **Destroy**.  Confirm by clicking Destroy again.
+2) Select **Destroy**.  Confirm by clicking Destroy again.
 
-    ![alt text](./images/destroy-stack.jpg)
+   ![alt text](./images/destroy-stack.jpg)
 
 Once completed, return to Stacks to use the Apply option to create a new instance with the original configuration. It is not necessary to **Delete Stack** unless the stack configuration is changing.
 
@@ -104,6 +109,8 @@ If a bucket was defined in the variables, the stack will attempt to restore a co
 ## Network Security
 
 As mentioned above, it is highly recommended to configure the static_ip field in the Stack variables so traffic will only be allowed from your home IP.  This does prevent remote monitoring from other IPs such as a mobile device, since the IP will constantly be changing.  Consider a VPN from a mobile device to your home network if this is important.  At this time, configuring HTTPS for a self-hosted option is not part of this stack configuration
+
+If using Edge, if the "Secure Network" feature is enabled, it will use a VPN for the site since it is not secure by default, and your IP will be different from what is entered in the "source_ip" variable.  In the Edge settings, configure Secure Network to never be used for your Oracle instances IP
 
 ## Backup and Restore
 
@@ -131,7 +138,7 @@ sudo git pull
 sudo docker-compose up --build -d
 ```
 
-<https://www.obico.io/docs/server-guides/ops/#upgrade-obico-server>
+[https://www.obico.io/docs/server-guides/ops/#upgrade-obico-server](https://www.obico.io/docs/server-guides/ops/#upgrade-obico-server)
 
 If you have not setup SSH, go to the Stacks menu mentioned above, select your stack for Obico and run the `Destroy` command to remove the current instance and then `Apply` to recreate the instance with the latest version and restoring from your last backup
 

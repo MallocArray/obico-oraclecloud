@@ -64,7 +64,7 @@ variable "operating_system" {
 
 variable "operating_system_version" {
   default = "22.04"
-  description = "Version name of the specified OS, such as '18.04'"
+  description = "Version name of the specified OS, such as '22.04'"
 }
 
 resource "random_id" "obico_id" {

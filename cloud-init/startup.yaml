@@ -53,6 +53,9 @@ runcmd:
     - |
         cd /obico-server
         docker compose up -d
+        echo "Sleeping for 1 minute for server to complete startup"
+        sleep 60
+        echo "Fixing the Django Site https://www.obico.io/docs/server-guides/configure/#django-site"
         docker compose run web ./manage.py site --add $(wget -q -O - ipinfo.io/ip):3334
 
 
