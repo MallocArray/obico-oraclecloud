@@ -49,9 +49,11 @@ runcmd:
         fi
 
     # Build and start Obico
+    # Also setup the Django site according to documentation
     - |
         cd /obico-server
         docker compose up -d
+        docker compose run web ./manage.py site --add $(wget -q -O - ipinfo.io/ip):3334
 
 
 write_files:
