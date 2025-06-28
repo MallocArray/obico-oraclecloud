@@ -31,7 +31,7 @@ This project contains a zip file that can be used with Oracle Cloud to create a 
 5) Click "Create Stack"
 
    ![alt text](./images/stacks.jpg)
-6) Leave the default option of "My Configuration". Change the "Terraform configuration source" to ".Zip file", then drag or Browse the zip file to the Stack Configuration section. Provide a name for the stack if desired or keep the auto-generated name.  Leave the default Terraform version as 1.2.x then click Next
+6) Leave the default option of "My Configuration". Change the "Terraform configuration source" to ".Zip file", then drag or Browse the zip file to the Stack Configuration section. Provide a name for the stack if desired or keep the auto-generated name.  Leave the default Terraform version as 1.5.x then click Next
 
    ![alt text](./images/create-stack.jpg)
 7) Review the variables and modify if needed. Click 'Next', then 'Create'
